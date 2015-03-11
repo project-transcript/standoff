@@ -10,6 +10,13 @@ module Standoff
         @afterda = ['dispense', 'refill', 'sub_status']
       end
     end
+
+    def tags (name = nil)
+      # without an argument, this is just an attr_accessor
+      return @tags unless name
+      # with an argument return all tags of given name type
+      @tags.select{|tag| tag.name == name}
+    end
     
     def to_s
         #takes into consideration the ordering of tags
