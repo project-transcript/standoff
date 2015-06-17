@@ -17,8 +17,8 @@ module Standoff
       # with an argument return all tags of given name type
       @tags.select{|tag| tag.name == name}
     end
-    
-    def to_s
+
+    def to_s # return the signal as a string with tags interpolated as inline XML
         #takes into consideration the ordering of tags
         xml = @signal.dup
         datags = []
@@ -46,6 +46,12 @@ module Standoff
         latetags.sort.each {|tag| insert_tag(xml,tag)}
         return xml
     end
+    def inspect # re-define, otherwise the to_s overrides the default inspect
+      vars = self.instance_variables. 
+        map{|v| "#{v}=#{instance_variable_get(v).inspect}"}.join(", ") 
+      "<#{self.class}: #{vars}>" 
+    end
+    
     
     def insert_tag(text,tag)
         end_tag_form = '</' + tag.name + '>'
@@ -103,7 +109,3 @@ module Standoff
   
 end
 
-#p = Standoff::XMLParser.new("<freq>BID</freq> X up to <duration>3 weeks</duration>")
-#s = p.parse
-#puts p.inspect
-#puts s.inspect
