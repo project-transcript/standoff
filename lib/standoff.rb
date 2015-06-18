@@ -2,12 +2,11 @@ require 'rexml/document'
 
 module Standoff
   class AnnotatedString
-    attr_accessor :signal, :tags; :afterda
+    attr_accessor :signal, :tags
     def initialize(options = {})
       if options[:signal] && options[:tags]
         @signal = options[:signal]
         @tags = options[:tags]
-        @afterda = ['dispense', 'refill', 'sub_status']
       end
     end
 
@@ -17,35 +16,23 @@ module Standoff
       # with an argument return all tags of given name type
       @tags.select{|tag| tag.name == name}
     end
-
+    
     def to_s # return the signal as a string with tags interpolated as inline XML
-        #takes into consideration the ordering of tags
-        xml = @signal.dup
-        datags = []
-        latetags = []
-        oldbegin = xml.length
-        
-        @tags.sort.delete_if do |tag|
-            if tag.name == 'doseamount'
-                datags << tag
-                false
-            elsif @afterda.member? tag.name
-                latetags << tag
-                false
-            elsif tag.end > oldbegin
-                #stops tags from overlapping
-                true
-            else
-                insert_tag(xml,tag)
-                oldbegin = tag.start
-                false
-            end
-        end
-        
-        datags.sort.each {|tag| insert_tag(xml,tag)}
-        latetags.sort.each {|tag| insert_tag(xml,tag)}
-        return xml
+      #takes into consideration the ordering of tags
+      xml = @signal.dup
+      datags = []
+      latetags = []
+      oldbegin = xml.length
+      
+      @tags.sort.reverse.each do |tag|
+        next if tag.end > oldbegin # AS allows overlapping tags, but we have to filter them when serializing to inline
+        oldbegin = tag.start
+        insert_tag(xml,tag)
+      end
+      
+      xml
     end
+
     def inspect # re-define, otherwise the to_s overrides the default inspect
       vars = self.instance_variables. 
         map{|v| "#{v}=#{instance_variable_get(v).inspect}"}.join(", ") 
@@ -102,8 +89,7 @@ module Standoff
       @end = options[:end]
     end
     def <=> (other)
-        #Returns reverse for AnnotatedString.to_s
-        return other.end <=> @end
+        return @end <=> other.end
     end
   end
   
