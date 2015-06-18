@@ -24,6 +24,7 @@ module Standoff
       latetags = []
       oldbegin = xml.length
       
+      # insert tags starting from the end of the string, so we can rely on the start and end indices
       @tags.sort.reverse.each do |tag|
         next if tag.end > oldbegin # AS allows overlapping tags, but we have to filter them when serializing to inline
         oldbegin = tag.start
@@ -43,7 +44,7 @@ module Standoff
     def insert_tag(text,tag)
         end_tag_form = '</' + tag.name + '>'
         text.insert(tag.end, end_tag_form)
-        start_tag_form = '<' + tag.name + '>'
+        start_tag_form = '<' + tag.name + tag.attributes.map{|k, v| " #{k}=\'#{v}\'"}.join + '>'
         text.insert(tag.start, start_tag_form)
         return text
     end
@@ -82,11 +83,11 @@ module Standoff
   class Tag
     attr_accessor :name, :attributes, :content, :start, :end
     def initialize(options = {})
-      @name = options[:name]
-      @attributes = options[:attributes]
-      @content = options[:content]
-      @start = options[:start]
-      @end = options[:end]
+      @name = options[:name] # string
+      @attributes = options[:attributes] # hash
+      @content = options[:content] # string
+      @start = options[:start] # numeric
+      @end = options[:end] 
     end
     def <=> (other)
         return @end <=> other.end
