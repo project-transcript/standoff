@@ -48,6 +48,25 @@ module Standoff
         text.insert(tag.start, start_tag_form)
         return text
     end
+
+    def previous_tag (tag)
+      # it's too bad we have to sort these every time. we should make @tags always be sorted.
+      tags = @tags.sort
+      index = tags.index tag
+      # we assume tag is a tag on self
+      raise "error in Standoff::AnnotatedString#previous_tag: argument should be a member of self.tags" if index.nil?
+      index > 0 ? tags[index - 1] : nil
+    end
+
+    def next_tag (tag)
+      # it's too bad we have to sort these every time. we should make @tags always be sorted.
+      tags = @tags.sort
+      index = tags.index tag
+      # we assume tag is a tag on self
+      raise "error in Standoff::AnnotatedString#previous_tag: argument should be a member of self.tags" if index.nil?
+      index < tags.length-1 ? tags[index + 1] : nil
+    end
+
   end
 
   class XMLParser
