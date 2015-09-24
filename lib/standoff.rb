@@ -111,6 +111,9 @@ module Standoff
     def <=> (other)
         return @end <=> other.end
     end
+    def overlap (other_tag)
+      ! ((@start .. @end).to_a & (other_tag.start .. other_tag.end).to_a).empty?
+    end
   end
   
 end

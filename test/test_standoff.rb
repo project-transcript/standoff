@@ -16,6 +16,20 @@ class StandoffTest < Minitest::Test
     assert tag.is_a? Standoff::Tag
   end
 
+  def test_tag_overlap
+    gold = Standoff::Tag.new(:start => 5, :end => 8)
+    inside = Standoff::Tag.new(:start => 6, :end => 7)
+    early = Standoff::Tag.new(:start => 1, :end => 4)
+    late = Standoff::Tag.new(:start => 11, :end => 14)
+    same = Standoff::Tag.new(:start => 5, :end => 8)
+    overlap = Standoff::Tag.new(:start => 1, :end => 6)
+    assert gold.overlap(inside)
+    assert ! gold.overlap(early)
+    assert gold.overlap(same)
+    assert gold.overlap(overlap)
+    assert ! gold.overlap(late)
+  end
+
   def test_create_tag_one_attribute
     tag = Standoff::Tag.new(:content => "tylenol",
                             :name => "medication",
