@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "standoff"
-  s.version = "0.0.4"
+  s.version = "0.0.5"
   s.date = '2014-12-01'
   s.summary = "Standoff"
   s.description = "Standoff Annotation library: provides functionality for adding span tags to strings.  Allows export to inline XML."
