@@ -20,8 +20,6 @@ module Standoff
     def to_s # return the signal as a string with tags interpolated as inline XML
       #takes into consideration the ordering of tags
       xml = @signal.dup
-      datags = []
-      latetags = []
       oldbegin = xml.length
       
       # insert tags starting from the end of the string, so we can rely on the start and end indices
